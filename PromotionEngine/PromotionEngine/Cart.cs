@@ -1,17 +1,25 @@
-﻿namespace PromotionEngine
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace PromotionEngine
 {
     public class Cart
     {
-        public Product Product { get; set; }
+        public ICollection<Product> Products { get; set; }
+
+        public Cart()
+        {
+            Products = new List<Product>();
+        }
 
         public decimal CalculateTotal()
         {
-            return Product?.Price ?? 0;
+            return Products?.Sum(p => p.Price) ?? 0;
         }
 
         public void Add(Product product)
         {
-            Product = product;
+            Products.Add(product);
         }
     }
 }

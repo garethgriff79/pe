@@ -25,5 +25,19 @@ namespace PromotionEngine.Tests
 
             Assert.AreEqual(50, totalValue);
         }
+
+        [TestMethod]
+        public void CartWithMultipleProductsCalculatesTotalValue()
+        {
+            var cart = new Cart();
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("B", 30));
+            cart.Add(new Product("C", 20));
+            cart.Add(new Product("D", 15));
+
+            var totalValue = cart.CalculateTotal();
+
+            Assert.AreEqual(115, totalValue);
+        }
     }
 }
