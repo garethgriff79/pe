@@ -15,15 +15,18 @@ namespace PromotionEngine
 
         public decimal CalculateTotal()
         {
+            decimal cartTotal = 0;
+
             if (Promotion != null)
             {
-                if (Products.Count(p => p.Sku == Promotion.Sku) == Promotion.Quantity)
-                {
-                    return Promotion.Price;
-                }
+                var promotionTotal = Promotion.Apply(Products);
+
+                cartTotal = promotionTotal;
             }
-            
-            return Products?.Sum(p => p.Price) ?? 0;
+
+            cartTotal += Products?.Where(p => !p.PromotionApplied).Sum(p => p.Price) ?? 0;
+
+            return cartTotal;
         }
 
         public void Add(Product product)
