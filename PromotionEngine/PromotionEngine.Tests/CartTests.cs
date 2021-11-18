@@ -39,5 +39,19 @@ namespace PromotionEngine.Tests
 
             Assert.AreEqual(115, totalValue);
         }
+
+        [TestMethod]
+        public void CartWithMultiBuyPromotionCalculatesTotalValue()
+        {
+            var cart = new Cart();
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("A", 50));
+            cart.AddPromotion(new MultiBuyPromotion("A", 3, 130));
+
+            var totalValue = cart.CalculateTotal();
+
+            Assert.AreEqual(130, totalValue);
+        }
     }
 }
