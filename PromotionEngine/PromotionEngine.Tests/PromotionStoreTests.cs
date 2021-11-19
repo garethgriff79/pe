@@ -84,5 +84,31 @@ namespace PromotionEngine.Tests
             Assert.AreEqual(160, totalValue);
             Assert.AreEqual(5, products.Count(p => p.PromotionApplied));
         }
+
+        [TestMethod]
+        public void PromotionStoreWithOverlappingMultiBuyAndCombinationCalculatesOnlyOnePromotionApplies()
+        {
+            var promotions = new List<IPromotion>
+            {
+                new MultiBuyPromotion("A", 3, 130),
+                new CombinationPromotion("A", "D", 60)
+            };
+
+            var promotionStore = new PromotionStore(promotions);
+
+            var products = new List<Product>
+            {
+                new Product("A", 50),
+                new Product("A", 50),
+                new Product("A", 50),
+                new Product("D", 15)
+            };
+
+            var totalValue = promotionStore.ApplyPromotions(products);
+
+            Assert.AreEqual(130, totalValue);
+            Assert.AreEqual(3, products.Count(p => p.PromotionApplied));
+            Assert.AreEqual(3, products.Count(p => p.PromotionApplied && p.Sku == "A"));
+        }
     }
 }

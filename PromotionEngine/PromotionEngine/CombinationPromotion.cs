@@ -24,7 +24,7 @@ namespace PromotionEngine
 
             while (availableProducts.Any())
             {
-                if (availableProducts.Any(p => p.Sku == _firstSku) && availableProducts.Any(p => p.Sku == _secondSku))
+                if (availableProducts.Any(p => p.Sku == _firstSku && !p.PromotionApplied) && availableProducts.Any(p => p.Sku == _secondSku && !p.PromotionApplied))
                 {
                     var firstProduct = products.First(p => p.Sku == _firstSku && !p.PromotionApplied);
                     var secondProduct = products.First(p => p.Sku == _secondSku && !p.PromotionApplied);
