@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PromotionEngine.Interfaces;
 
 namespace PromotionEngine
 {
-    public class MultiBuyPromotion
+    public class MultiBuyPromotion: IPromotion
     {
         private readonly string _sku;
         private readonly int _quantity;

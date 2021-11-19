@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PromotionEngine.Interfaces;
 
 namespace PromotionEngine.Tests
 {
@@ -8,7 +9,7 @@ namespace PromotionEngine.Tests
     public class PromotionStoreTests
     {
         [TestMethod]
-        public void CartWithMultiBuyPromotionCalculatesTotalValue()
+        public void PromotionStoreWithMultiBuyPromotionCalculatesTotalValue()
         {
             var promotions = new List<MultiBuyPromotion>
             {
@@ -31,7 +32,7 @@ namespace PromotionEngine.Tests
         }
 
         [TestMethod]
-        public void CartWithMultipleMultiBuyPromotionsCalculatesTotalValue()
+        public void PromotionStoreWithMultipleMultiBuyPromotionsCalculatesTotalValue()
         {
             var promotions = new List<MultiBuyPromotion>
             {
@@ -56,6 +57,32 @@ namespace PromotionEngine.Tests
             Assert.AreEqual(5, products.Count(p => p.PromotionApplied));
             Assert.AreEqual(3, products.Count(p => p.PromotionApplied && p.Sku == "A"));
             Assert.AreEqual(2, products.Count(p => p.PromotionApplied && p.Sku == "B"));
+        }
+
+        [TestMethod]
+        public void PromotionStoreWithMultiBuyAndCombinationCalculatesTotalValue()
+        {
+            var promotions = new List<IPromotion>
+            {
+                new MultiBuyPromotion("A", 3, 130),
+                new CombinationPromotion("C", "D", 30)
+            };
+
+            var promotionStore = new PromotionStore(promotions);
+
+            var products = new List<Product>
+            {
+                new Product("A", 50),
+                new Product("A", 50),
+                new Product("A", 50),
+                new Product("C", 20),
+                new Product("D", 15)
+            };
+
+            var totalValue = promotionStore.ApplyPromotions(products);
+
+            Assert.AreEqual(160, totalValue);
+            Assert.AreEqual(5, products.Count(p => p.PromotionApplied));
         }
     }
 }

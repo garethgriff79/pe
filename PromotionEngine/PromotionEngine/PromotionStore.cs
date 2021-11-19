@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PromotionEngine.Interfaces;
 
 namespace PromotionEngine
 {
     public class PromotionStore
     {
-        private readonly IEnumerable<MultiBuyPromotion> _promotions;
+        private readonly IEnumerable<IPromotion> _promotions;
 
         public PromotionStore()
         {
-            _promotions = Enumerable.Empty<MultiBuyPromotion>();
+            _promotions = Enumerable.Empty<IPromotion>();
         }
 
-        public PromotionStore(IEnumerable<MultiBuyPromotion> promotions)
+        public PromotionStore(IEnumerable<IPromotion> promotions)
         {
             _promotions = promotions;
         }

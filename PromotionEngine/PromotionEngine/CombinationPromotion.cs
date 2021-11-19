@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PromotionEngine.Interfaces;
 
 namespace PromotionEngine
 {
-    public class CombinationPromotion
+    public class CombinationPromotion: IPromotion
     {
         private readonly string _firstSku;
         private readonly string _secondSku;
