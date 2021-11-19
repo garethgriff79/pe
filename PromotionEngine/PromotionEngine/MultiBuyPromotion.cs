@@ -5,15 +5,15 @@ namespace PromotionEngine
 {
     public class MultiBuyPromotion
     {
-        public string Sku { get; }
-        public int Quantity { get; }
-        public decimal Price { get; }
+        private readonly string _sku;
+        private readonly int _quantity;
+        private readonly decimal _price;
 
         public MultiBuyPromotion(string sku, int quantity, int price)
         {
-            Sku = sku;
-            Quantity = quantity;
-            Price = price;
+            _sku = sku;
+            _quantity = quantity;
+            _price = price;
         }
 
         public decimal Apply(IEnumerable<Product> products)
@@ -23,24 +23,24 @@ namespace PromotionEngine
 
             while (availableProducts.Any())
             {
-                if (availableProducts.Count(p => p.Sku == Sku) >= Quantity)
+                if (availableProducts.Count(p => p.Sku == _sku) >= _quantity)
                 {
                     var numberProductsAppliedTo = 0;
 
-                    foreach (var appliedProduct in products.Where(p => p.Sku == Sku && !p.PromotionApplied))
+                    foreach (var appliedProduct in products.Where(p => p.Sku == _sku && !p.PromotionApplied))
                     {
                         appliedProduct.PromotionApplied = true;
-                        availableProducts.Remove(availableProducts.First(p => p.Sku == Sku));
+                        availableProducts.Remove(availableProducts.First(p => p.Sku == _sku));
 
                         numberProductsAppliedTo++;
 
-                        if (numberProductsAppliedTo == Quantity)
+                        if (numberProductsAppliedTo == _quantity)
                         {
                             break;
                         }
                     }
 
-                    promotionValue += Price;
+                    promotionValue += _price;
                 }
                 else
                 {

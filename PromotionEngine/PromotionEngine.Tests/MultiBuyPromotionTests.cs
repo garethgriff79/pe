@@ -5,7 +5,7 @@ using System.Linq;
 namespace PromotionEngine.Tests
 {
     [TestClass]
-    public class MultiPromotionTests
+    public class MultiBuyPromotionTests
     {
         [TestMethod]
         public void MultiBuyPromotionSingleSetReturnsValue()
