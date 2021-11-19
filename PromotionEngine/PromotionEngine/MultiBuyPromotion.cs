@@ -18,26 +18,37 @@ namespace PromotionEngine
 
         public decimal Apply(IEnumerable<Product> products)
         {
-            if (products.Count(p => p.Sku == Sku) >= Quantity)
+            var availableProducts = products.ToList();
+            decimal promotionValue = 0;
+
+            while (availableProducts.Any())
             {
-                var numberProductsAppliedTo = 0;
-
-                foreach (var appliedProduct in products.Where(p => p.Sku == Sku))
+                if (availableProducts.Count(p => p.Sku == Sku) >= Quantity)
                 {
-                    appliedProduct.PromotionApplied = true;
+                    var numberProductsAppliedTo = 0;
 
-                    numberProductsAppliedTo++;
-
-                    if (numberProductsAppliedTo == Quantity)
+                    foreach (var appliedProduct in products.Where(p => p.Sku == Sku && !p.PromotionApplied))
                     {
-                        break;
-                    }
-                }
+                        appliedProduct.PromotionApplied = true;
+                        availableProducts.Remove(availableProducts.First(p => p.Sku == Sku));
 
-                return Price;
+                        numberProductsAppliedTo++;
+
+                        if (numberProductsAppliedTo == Quantity)
+                        {
+                            break;
+                        }
+                    }
+
+                    promotionValue += Price;
+                }
+                else
+                {
+                    availableProducts = new List<Product>();
+                }
             }
 
-            return 0;
+            return promotionValue;
         }
     }
 }

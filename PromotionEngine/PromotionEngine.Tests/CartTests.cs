@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PromotionEngine.Tests
@@ -83,6 +84,27 @@ namespace PromotionEngine.Tests
             var totalValue = cart.CalculateTotal();
 
             Assert.AreEqual(180, totalValue);
+        }
+
+        [TestMethod]
+        public void CartWithMultiBuyPromotionDoubleSetAndOtherProductsCalculatesTotalValue()
+        {
+            var cart = new Cart();
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("B", 30));
+            cart.Add(new Product("C", 20));
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("A", 50));
+            cart.AddPromotion(new MultiBuyPromotion("A", 3, 130));
+
+            var totalValue = cart.CalculateTotal();
+
+            Assert.AreEqual(310, totalValue);
+            Assert.AreEqual(6, cart.Products.Count(p => p.PromotionApplied));
+            Assert.AreEqual(6, cart.Products.Count(p => p.PromotionApplied && p.Sku == "A"));
         }
     }
 }
