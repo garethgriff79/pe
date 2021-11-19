@@ -18,14 +18,31 @@ namespace PromotionEngine
 
         public decimal Apply(IEnumerable<Product> products)
         {
-            if (products.Any(p => p.Sku == _firstSku) && products.Any(p => p.Sku == _secondSku))
+            var availableProducts = products.ToList();
+            decimal promotionValue = 0;
+
+            while (availableProducts.Any())
             {
-                products.First(p => p.Sku == _firstSku).PromotionApplied = true;
-                products.First(p => p.Sku == _secondSku).PromotionApplied = true;
-                return _price;
+                if (availableProducts.Any(p => p.Sku == _firstSku) && availableProducts.Any(p => p.Sku == _secondSku))
+                {
+                    var firstProduct = products.First(p => p.Sku == _firstSku && !p.PromotionApplied);
+                    var secondProduct = products.First(p => p.Sku == _secondSku && !p.PromotionApplied);
+
+                    firstProduct.PromotionApplied = true;
+                    secondProduct.PromotionApplied = true;
+
+                    availableProducts.Remove(firstProduct);
+                    availableProducts.Remove(secondProduct);
+
+                    promotionValue += _price;
+                }
+                else
+                {
+                    availableProducts = new List<Product>();
+                }
             }
 
-            return 0;
+            return promotionValue;
         }
     }
 }
