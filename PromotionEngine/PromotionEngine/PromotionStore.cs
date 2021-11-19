@@ -22,7 +22,7 @@ namespace PromotionEngine
         {
             decimal promotionTotal = 0;
 
-            // assuming the order promotions are applied doesn't matter with just multi buy promotions
+            // assuming the order promotions are applied doesn't matter if different promotions are mutually exclusive
             foreach (var promotion in _promotions)
             {
                 promotionTotal += promotion.Apply(products);
