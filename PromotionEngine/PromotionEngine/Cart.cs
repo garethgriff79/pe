@@ -5,11 +5,13 @@ namespace PromotionEngine
 {
     public class Cart
     {
+        private readonly PromotionStore _promotionStore;
         public ICollection<Product> Products { get; set; }
-        public MultiBuyPromotion Promotion { get; set; }
-
-        public Cart()
+        
+        public Cart(PromotionStore promotionStore)
         {
+            _promotionStore = promotionStore;
+
             Products = new List<Product>();
         }
 
@@ -17,12 +19,9 @@ namespace PromotionEngine
         {
             decimal cartTotal = 0;
 
-            if (Promotion != null)
-            {
-                var promotionTotal = Promotion.Apply(Products);
+            var promotionTotal = _promotionStore.ApplyPromotions(Products);
 
-                cartTotal = promotionTotal;
-            }
+            cartTotal = promotionTotal;
 
             cartTotal += Products?.Where(p => !p.PromotionApplied).Sum(p => p.Price) ?? 0;
 
@@ -32,11 +31,6 @@ namespace PromotionEngine
         public void Add(Product product)
         {
             Products.Add(product);
-        }
-
-        public void AddPromotion(MultiBuyPromotion promotion)
-        {
-            Promotion = promotion;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,7 +10,7 @@ namespace PromotionEngine.Tests
         [TestMethod]
         public void CartWithNoProductsReturnsZeroTotalValue()
         {
-            var cart = new Cart();
+            var cart = new Cart(new PromotionStore());
 
             var totalValue = cart.CalculateTotal();
 
@@ -19,7 +20,7 @@ namespace PromotionEngine.Tests
         [TestMethod]
         public void CartWithProductCalculatesTotalValue()
         {
-            var cart = new Cart();
+            var cart = new Cart(new PromotionStore());
             cart.Add(new Product("A", 50));
 
             var totalValue = cart.CalculateTotal();
@@ -30,7 +31,7 @@ namespace PromotionEngine.Tests
         [TestMethod]
         public void CartWithMultipleProductsCalculatesTotalValue()
         {
-            var cart = new Cart();
+            var cart = new Cart(new PromotionStore());
             cart.Add(new Product("A", 50));
             cart.Add(new Product("B", 30));
             cart.Add(new Product("C", 20));
@@ -44,11 +45,17 @@ namespace PromotionEngine.Tests
         [TestMethod]
         public void CartWithMultiBuyPromotionCalculatesTotalValue()
         {
-            var cart = new Cart();
+            var promotions = new List<MultiBuyPromotion>
+            {
+                new MultiBuyPromotion("A", 3, 130)
+            };
+
+            var promotionStore = new PromotionStore(promotions);
+
+            var cart = new Cart(promotionStore);
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
-            cart.AddPromotion(new MultiBuyPromotion("A", 3, 130));
 
             var totalValue = cart.CalculateTotal();
 
@@ -58,12 +65,18 @@ namespace PromotionEngine.Tests
         [TestMethod]
         public void CartWithMultiBuyPromotionAndExcessQuantityCalculatesTotalValue()
         {
-            var cart = new Cart();
+            var promotions = new List<MultiBuyPromotion>
+            {
+                new MultiBuyPromotion("A", 3, 130)
+            };
+
+            var promotionStore = new PromotionStore(promotions);
+
+            var cart = new Cart(promotionStore);
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
-            cart.AddPromotion(new MultiBuyPromotion("A", 3, 130));
 
             var totalValue = cart.CalculateTotal();
 
@@ -73,13 +86,19 @@ namespace PromotionEngine.Tests
         [TestMethod]
         public void CartWithMultiBuyPromotionAndOtherProductsCalculatesTotalValue()
         {
-            var cart = new Cart();
+            var promotions = new List<MultiBuyPromotion>
+            {
+                new MultiBuyPromotion("A", 3, 130)
+            };
+
+            var promotionStore = new PromotionStore(promotions);
+
+            var cart = new Cart(promotionStore);
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
             cart.Add(new Product("B", 30));
             cart.Add(new Product("C", 20));
-            cart.AddPromotion(new MultiBuyPromotion("A", 3, 130));
 
             var totalValue = cart.CalculateTotal();
 
@@ -89,7 +108,14 @@ namespace PromotionEngine.Tests
         [TestMethod]
         public void CartWithMultiBuyPromotionDoubleSetAndOtherProductsCalculatesTotalValue()
         {
-            var cart = new Cart();
+            var promotions = new List<MultiBuyPromotion>
+            {
+                new MultiBuyPromotion("A", 3, 130)
+            };
+
+            var promotionStore = new PromotionStore(promotions);
+
+            var cart = new Cart(promotionStore);
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
@@ -98,13 +124,38 @@ namespace PromotionEngine.Tests
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
             cart.Add(new Product("A", 50));
-            cart.AddPromotion(new MultiBuyPromotion("A", 3, 130));
 
             var totalValue = cart.CalculateTotal();
 
             Assert.AreEqual(310, totalValue);
             Assert.AreEqual(6, cart.Products.Count(p => p.PromotionApplied));
             Assert.AreEqual(6, cart.Products.Count(p => p.PromotionApplied && p.Sku == "A"));
+        }
+
+        [TestMethod]
+        public void CartWithMultipleMultiBuyPromotionsCalculatesTotalValue()
+        {
+            var promotions = new List<MultiBuyPromotion>
+            {
+                new MultiBuyPromotion("A", 3, 130),
+                new MultiBuyPromotion("B", 2, 45)
+            };
+
+            var promotionStore = new PromotionStore(promotions);
+
+            var cart = new Cart(promotionStore);
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("A", 50));
+            cart.Add(new Product("B", 30));
+            cart.Add(new Product("B", 30));
+
+            var totalValue = cart.CalculateTotal();
+
+            Assert.AreEqual(175, totalValue);
+            Assert.AreEqual(5, cart.Products.Count(p => p.PromotionApplied));
+            Assert.AreEqual(3, cart.Products.Count(p => p.PromotionApplied && p.Sku == "A"));
+            Assert.AreEqual(2, cart.Products.Count(p => p.PromotionApplied && p.Sku == "B"));
         }
     }
 }
