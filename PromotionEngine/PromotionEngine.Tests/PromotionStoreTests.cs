@@ -88,6 +88,8 @@ namespace PromotionEngine.Tests
         [TestMethod]
         public void PromotionStoreWithOverlappingMultiBuyAndCombinationCalculatesOnlyOnePromotionApplies()
         {
+            // promotion should be mutually exclusive so this scenario shouldn't occur, but here just in case
+
             var promotions = new List<IPromotion>
             {
                 new MultiBuyPromotion("A", 3, 130),
